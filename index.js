@@ -84,7 +84,6 @@ async function handleDbApi(req, res) {
 
   const url = new URL(req.url, `http://localhost`);
   const parts = url.pathname.split("/").filter(Boolean);
-  // /api/db/<action>
   const action = parts[parts.length - 1];
   const body = req.method === "POST" ? await readBody(req) : {};
 
@@ -126,51 +125,159 @@ async function handleDbApi(req, res) {
 }
 
 // ── HTML Panel ────────────────────────────────────────────────────
+// Uses CSS custom properties inherited from OpenClaw webchat theme.
+// Falls back to sensible dark-theme defaults when opened standalone.
 function getPanelHtml() {
   return `<!DOCTYPE html>
 <html><head><meta charset="UTF-8"><style>
+:root{
+  /* Inherit from webchat theme with dark-theme fallbacks */
+  --_bg:       var(--bg,            rgba(14,16,21,0.97));
+  --_bg2:      var(--bg-elevated,   rgba(25,28,36,0.97));
+  --_bg3:      var(--bg-muted,      rgba(31,35,48,0.97));
+  --_bg-hover: var(--bg-hover,      rgba(255,255,255,0.08));
+  --_text:     var(--text-strong,   #f0f0f2);
+  --_text2:    var(--text,          #d4d4d8);
+  --_muted:    var(--muted,         #9ca3af);
+  --_muted2:   var(--muted-strong,  #6b7280);
+  --_border:   var(--border,        rgba(255,255,255,0.10));
+  --_border2:  var(--border-strong, rgba(255,255,255,0.18));
+  --_accent:   var(--accent,        #60a5fa);
+  --_accent-h: var(--accent-hover, #93bbfd);
+  --_green:    var(--cm-success,    #4ade80);
+  --_red:      var(--cm-danger,     #f87171);
+  --_blue:     #60a5fa;
+  --_font:     Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  --_r:        var(--control-ui-text-scale, 1);
+}
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:transparent;color:#ffffff;overflow:hidden;font-size:16px}
-.tabs{display:flex;gap:4px;padding:6px 12px 0}
-.tab{padding:6px 16px;font-size:16px;border:none;border-radius:8px 8px 0 0;background:rgba(255,255,255,0.08);color:#cccccc;cursor:pointer}
-.tab.active{background:rgba(255,255,255,0.18);color:#ffffff}
-.pane{padding:10px 12px;display:none}
+body{
+  font-family:var(--_font);
+  background:var(--_bg);
+  color:var(--_text);
+  overflow:hidden;
+  font-size:max(14px, calc(1rem * var(--_r)));
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+/* Tabs */
+.tabs{display:flex;gap:2px;padding:4px 8px 0}
+.tab{
+  padding:6px 14px;
+  font-size:max(13px, calc(0.875rem * var(--_r)));
+  border:none;border-radius:6px 6px 0 0;
+  background:var(--_bg3);
+  color:var(--_muted);
+  cursor:pointer;font-weight:500;
+  transition:background .15s,color .15s;
+}
+.tab:hover{color:var(--_text2)}
+.tab.active{background:var(--_bg2);color:var(--_text);font-weight:600}
+/* Panes */
+.pane{padding:8px;display:none}
 .pane.active{display:block}
-.bar{display:flex;align-items:center;gap:6px;height:44px}
-.btn{width:40px;height:40px;border:none;border-radius:8px;background:rgba(255,255,255,0.12);color:#ffffff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:background .15s}
-.btn:hover{background:rgba(255,255,255,0.25)}
-.btn.play{background:rgba(76,175,80,0.2);color:#4caf50}
-.btn.play:hover{background:rgba(76,175,80,0.3)}
-.btn.stop{background:rgba(244,67,54,0.2);color:#f44336}
-.btn.stop:hover{background:rgba(244,67,54,0.3)}
-.btn.db{width:auto;padding:0 12px;font-size:14px;border-radius:6px;background:rgba(33,150,243,0.15);color:#2196f3}
-.btn.db:hover{background:rgba(33,150,243,0.25)}
-.status{font-size:14px;color:#cccccc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px;margin-left:6px;flex:1}
-.status.on{color:#66ff66}
-.status.err{color:#ff6666}
-.db-output{font-size:14px;color:#dddddd;white-space:pre-wrap;max-height:150px;overflow-y:auto;margin-top:6px;font-family:monospace}
+/* Rows */
+.bar{display:flex;align-items:center;gap:6px;min-height:42px}
+/* Buttons */
+.btn{
+  width:38px;height:38px;
+  border:1px solid var(--_border);
+  border-radius:6px;
+  background:var(--_bg3);
+  color:var(--_text);
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:max(16px, calc(1.125rem * var(--_r)));
+  font-weight:600;
+  transition:background .15s,transform .1s;
+}
+.btn:hover{background:var(--_bg-hover);border-color:var(--_border2)}
+.btn:active{transform:scale(0.94)}
+/* Play / Stop with accent tint */
+.btn.play{
+  background:rgba(74,222,128,0.10);
+  color:var(--_green);
+  border-color:rgba(74,222,128,0.2);
+}
+.btn.play:hover{background:rgba(74,222,128,0.20)}
+.btn.stop{
+  background:rgba(248,113,113,0.10);
+  color:var(--_red);
+  border-color:rgba(248,113,113,0.2);
+}
+.btn.stop:hover{background:rgba(248,113,113,0.20)}
+/* DB buttons */
+.btn.db{
+  width:auto;padding:0 10px;
+  font-size:max(12px, calc(0.8125rem * var(--_r)));
+  background:rgba(96,165,250,0.10);
+  color:var(--_blue);
+  border-color:rgba(96,165,250,0.2);
+  font-weight:500;
+}
+.btn.db:hover{background:rgba(96,165,250,0.20)}
+/* Status text */
+.status{
+  font-size:max(13px, calc(0.875rem * var(--_r)));
+  color:var(--_muted);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  max-width:220px;margin-left:6px;flex:1;
+  line-height:1.4;
+}
+.status.on{color:var(--_green);font-weight:500}
+.status.err{color:var(--_red);font-weight:500}
+/* DB output area */
+.db-output{
+  font-size:max(12px, calc(0.8125rem * var(--_r)));
+  color:var(--_text2);
+  white-space:pre-wrap;
+  max-height:130px;overflow-y:auto;
+  margin-top:4px;
+  font-family:"SF Mono",SFMono-Regular,Consolas,"Liberation Mono",monospace;
+  line-height:1.5;
+  border-radius:6px;
+  padding:8px;
+  background:var(--_bg3);
+  border:1px solid var(--_border);
+}
+/* Form controls */
 .db-row{display:flex;gap:6px;margin-top:6px}
-.db-row select,.db-row input{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);color:#ffffff;border-radius:6px;padding:4px 10px;font-size:16px}
-.db-row select option{background:#2a2a2a}
+.db-row select,.db-row input{
+  background:var(--_bg3);
+  border:1px solid var(--_border);
+  color:var(--_text);
+  border-radius:6px;
+  padding:6px 10px;
+  font-size:max(14px, calc(0.875rem * var(--_r)));
+  font-family:inherit;
+}
+.db-row select:focus,.db-row input:focus{
+  outline:none;
+  border-color:var(--_accent);
+  box-shadow:0 0 0 2px rgba(96,165,250,0.15);
+}
+.db-row select option{background:var(--_bg2);color:var(--_text)}
 </style></head><body>
 <div class="tabs">
-  <button class="tab active" onclick="switchTab('player',this)">♫ Player</button>
-  <button class="tab" onclick="switchTab('db',this)">🗄️ DB</button>
+  <button class="tab active" onclick="switchTab('player',this)">&#9835; Player</button>
+  <button class="tab" onclick="switchTab('db',this)">&#128196; DB</button>
 </div>
+
 <div id="player-pane" class="pane active">
   <div class="bar">
-    <button class="btn" onclick="player('prev')" title="Previous">⏮</button>
-    <button class="btn play" onclick="player('play')" title="Play / Resume">▶</button>
-    <button class="btn stop" onclick="player('stop')" title="Stop">⏹</button>
-    <button class="btn" onclick="player('next')" title="Next">⏭</button>
+    <button class="btn" onclick="player('prev')" title="Previous">&#9194;</button>
+    <button class="btn play" onclick="player('play')" title="Play / Resume">&#9654;</button>
+    <button class="btn stop" onclick="player('stop')" title="Stop">&#9724;</button>
+    <button class="btn" onclick="player('next')" title="Next">&#9193;</button>
     <span class="status" id="p-status">...</span>
   </div>
   <div class="bar" style="margin-top:4px">
-    <span style="font-size:16px;color:#cccccc;width:60px">Mood:</span>
-    <select id="mood" style="flex:1;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);color:#ffffff;border-radius:6px;padding:4px 10px;font-size:16px"><option value="">Resume</option><option value="ambient">Ambient</option><option value="rock">Rock</option><option value="jazz">Jazz</option><option value="country">Country</option><option value="electronic">Electronic</option><option value="classical">Classical</option><option value="pop">Pop</option><option value="dance">Dance</option><option value="blues">Blues</option><option value="metal">Metal</option><option value="reggae">Reggae</option><option value="soul">Soul</option><option value="funk">Funk</option><option value="techno">Techno</option><option value="indie">Indie</option><option value="folk">Folk</option><option value="lounge">Lounge</option><option value="80s">80s</option><option value="90s">90s</option></select>
-    <button class="btn play" onclick="playMood()" title="Play mood" style="width:40px;height:40px;font-size:18px">▶</button>
+    <span style="font-size:max(14px,calc(0.875rem * var(--_r)));color:var(--_muted);width:54px;font-weight:600">Mood:</span>
+    <select id="mood" style="flex:1;background:var(--_bg3);border:1px solid var(--_border);color:var(--_text);border-radius:6px;padding:6px 10px;font-size:max(14px,calc(0.875rem * var(--_r)));font-family:inherit"><option value="">Resume</option><option value="ambient">Ambient</option><option value="rock">Rock</option><option value="jazz">Jazz</option><option value="country">Country</option><option value="electronic">Electronic</option><option value="classical">Classical</option><option value="pop">Pop</option><option value="dance">Dance</option><option value="blues">Blues</option><option value="metal">Metal</option><option value="reggae">Reggae</option><option value="soul">Soul</option><option value="funk">Funk</option><option value="techno">Techno</option><option value="indie">Indie</option><option value="folk">Folk</option><option value="lounge">Lounge</option><option value="80s">80s</option><option value="90s">90s</option></select>
+    <button class="btn play" onclick="playMood()" title="Play mood">&#9654;</button>
   </div>
 </div>
+
 <div id="db-pane" class="pane">
   <div class="bar">
     <button class="btn db" onclick="db('stats')">Stats</button>
@@ -186,6 +293,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:transpar
   </div>
   <div class="db-output" id="db-output">Click a button to interact with the stream database</div>
 </div>
+
 <script>
 const PAPI='/api/player', DAPI='/api/db';
 function switchTab(t,el){
