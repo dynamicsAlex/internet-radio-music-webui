@@ -102,7 +102,20 @@ async function handleDbApi(req, res) {
       else if (sub === "effective") args.push("--effective");
       else if (sub === "top") args.push("--top", String(body.n || 10));
       else if (sub === "top-speed") args.push("--top-speed", String(body.n || 10));
-      result = await runScript(DB_STATS, args, 60000);
+      const raw = await runScript(DB_STATS, args, 60000);
+      if (sub === "effective" && raw.ok) {
+        // Extract only the Efficiency Report section
+        const lines = raw.output.split(/\r?\n/);
+        const filtered = [];
+        let inEff = false;
+        for (const line of lines) {
+          if (line.startsWith("Stream Efficiency Report")) inEff = true;
+          if (inEff) filtered.push(line);
+        }
+        result = { ...raw, output: filtered.length > 1 ? filtered.join("\n") : raw.output };
+      } else {
+        result = raw;
+      }
       break;
     }
     case "list":
@@ -289,7 +302,7 @@ body{
   </div>
   <div class="bar" style="margin-top:4px">
     <span style="font-size:max(14px,calc(0.875rem * var(--_r)));color:var(--_muted);width:54px;font-weight:600">Mood:</span>
-    <select id="mood" style="flex:1;background:var(--_bg3);border:1px solid var(--_border);color:var(--_text);border-radius:6px;padding:6px 10px;font-size:max(14px,calc(0.875rem * var(--_r)));font-family:inherit"><option value="">Resume</option><option value="ambient">Ambient</option><option value="rock">Rock</option><option value="jazz">Jazz</option><option value="country">Country</option><option value="electronic">Electronic</option><option value="classical">Classical</option><option value="pop">Pop</option><option value="dance">Dance</option><option value="blues">Blues</option><option value="metal">Metal</option><option value="reggae">Reggae</option><option value="soul">Soul</option><option value="funk">Funk</option><option value="techno">Techno</option><option value="indie">Indie</option><option value="folk">Folk</option><option value="lounge">Lounge</option><option value="80s">80s</option><option value="90s">90s</option></select>
+    <select id="mood" style="flex:1;background:var(--_bg3);border:1px solid var(--_border);color:var(--_text);border-radius:6px;padding:6px 10px;font-size:max(14px,calc(0.875rem * var(--_r)));font-family:inherit"><option value="">Resume</option><option value="ambient">Ambient</option><option value="rock">Rock</option><option value="jazz">Jazz</option><option value="country">Country</option><option value="electronic">Electronic</option><option value="classical">Classical</option><option value="pop">Pop</option><option value="dance">Dance</option><option value="blues">Blues</option><option value="metal">Metal</option><option value="reggae">Reggae</option><option value="soul">Soul</option><option value="funk">Funk</option><option value="techno">Techno</option><option value="indie">Indie</option><option value="folk">Folk</option><option value="lounge">Lounge</option><option value="80s">80s</option><option value="90s">90s</option><option value="alternative">Alternative</option><option value="disco">Disco</option><option value="trance">Trance</option><option value="gospel">Gospel</option><option value="latin">Latin</option><option value="house">House</option><option value="oldies">Oldies</option><option value="news">News</option><option value="talk">Talk</option><option value="punk">Punk</option><option value="top-40">Top 40</option></select>
     <button class="btn play" onclick="playMood()" title="Play mood">&#9654;</button>
   </div>
 </div>
@@ -304,7 +317,7 @@ body{
     <button class="btn db" onclick="db('rebuild')">Rebuild</button>
   </div>
   <div class="db-row">
-    <select id="db-genre"><option value="">All genres</option><option value="ambient">Ambient</option><option value="rock">Rock</option><option value="jazz">Jazz</option><option value="country">Country</option><option value="electronic">Electronic</option><option value="classical">Classical</option><option value="pop">Pop</option><option value="dance">Dance</option><option value="blues">Blues</option><option value="metal">Metal</option><option value="reggae">Reggae</option><option value="soul">Soul</option><option value="funk">Funk</option><option value="techno">Techno</option><option value="indie">Indie</option><option value="folk">Folk</option><option value="lounge">Lounge</option><option value="80s">80s</option><option value="90s">90s</option></select>
+    <select id="db-genre"><option value="">All genres</option><option value="ambient">Ambient</option><option value="rock">Rock</option><option value="jazz">Jazz</option><option value="country">Country</option><option value="electronic">Electronic</option><option value="classical">Classical</option><option value="pop">Pop</option><option value="dance">Dance</option><option value="blues">Blues</option><option value="metal">Metal</option><option value="reggae">Reggae</option><option value="soul">Soul</option><option value="funk">Funk</option><option value="techno">Techno</option><option value="indie">Indie</option><option value="folk">Folk</option><option value="lounge">Lounge</option><option value="80s">80s</option><option value="90s">90s</option><option value="alternative">Alternative</option><option value="disco">Disco</option><option value="trance">Trance</option><option value="gospel">Gospel</option><option value="latin">Latin</option><option value="house">House</option><option value="oldies">Oldies</option><option value="news">News</option><option value="talk">Talk</option><option value="punk">Punk</option><option value="top-40">Top 40</option></select>
     <button class="btn db" onclick="dbList()">List</button>
   </div>
   <div class="db-output" id="db-output">Click a button to interact with the stream database</div>
