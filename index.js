@@ -17,11 +17,13 @@ async function runScript(script, args = [], timeout = 30000) {
     const { stdout, stderr } = await execFileAsync(
       "python",
       [script, ...args],
-      { timeout, encoding: "utf-8" }
+      { timeout, encoding: "utf-8", maxBuffer: 4 * 1024 * 1024 }
     );
     return { ok: true, output: stdout.trim(), error: stderr || null };
   } catch (err) {
-    return { ok: false, output: "", error: err.message };
+    // If killed by timeout, include any partial output
+    const partial = (err.stdout || "").toString().trim();
+    return { ok: false, output: partial, error: err.message };
   }
 }
 
@@ -113,9 +115,17 @@ async function handleDbApi(req, res) {
     case "check":
       result = await runScript(DB_CHECK, [], 120000);
       break;
-    case "rebuild":
-      result = await runScript(DB_BUILD, [], 120000);
+    case "rebuild": {
+      const buildResult = await runScript(DB_BUILD, [], 600000);
+      if (buildResult.ok) {
+        const statsResult = await runScript(DB_STATS, [], 60000);
+        const summary = statsResult.ok ? statsResult.output : buildResult.output;
+        result = { ok: true, output: buildResult.output + "\n\n" + summary, error: null };
+      } else {
+        result = buildResult;
+      }
       break;
+    }
     case "add":
       if (!body.url || !body.name || !body.genre) {
         jsonRes(res, 400, { error: "Missing required fields: url, name, genre" });
@@ -334,7 +344,7 @@ async function refresh(){
 }
 async function db(action, sub){
   const out=document.getElementById('db-output');
-  out.textContent='Loading...';
+  out.textContent=action==='rebuild'?'Rebuilding... please wait (this can take 5+ minutes)':'Loading...';
   try{
     const body=sub?{sub:sub}:{};
     const r=await fetch(DAPI+'/'+action,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
