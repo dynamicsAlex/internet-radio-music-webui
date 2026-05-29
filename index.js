@@ -130,27 +130,27 @@ function getPanelHtml() {
   return `<!DOCTYPE html>
 <html><head><meta charset="UTF-8"><style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:transparent;color:#e0e0e0;overflow:hidden;font-size:16px}
+body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:transparent;color:#ffffff;overflow:hidden;font-size:16px}
 .tabs{display:flex;gap:4px;padding:6px 12px 0}
-.tab{padding:6px 16px;font-size:16px;border:none;border-radius:8px 8px 0 0;background:rgba(255,255,255,0.05);color:#888;cursor:pointer}
-.tab.active{background:rgba(255,255,255,0.12);color:#e0e0e0}
+.tab{padding:6px 16px;font-size:16px;border:none;border-radius:8px 8px 0 0;background:rgba(255,255,255,0.08);color:#cccccc;cursor:pointer}
+.tab.active{background:rgba(255,255,255,0.18);color:#ffffff}
 .pane{padding:10px 12px;display:none}
 .pane.active{display:block}
 .bar{display:flex;align-items:center;gap:6px;height:44px}
-.btn{width:40px;height:40px;border:none;border-radius:8px;background:rgba(255,255,255,0.08);color:#e0e0e0;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:background .15s}
-.btn:hover{background:rgba(255,255,255,0.15)}
+.btn{width:40px;height:40px;border:none;border-radius:8px;background:rgba(255,255,255,0.12);color:#ffffff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:background .15s}
+.btn:hover{background:rgba(255,255,255,0.25)}
 .btn.play{background:rgba(76,175,80,0.2);color:#4caf50}
 .btn.play:hover{background:rgba(76,175,80,0.3)}
 .btn.stop{background:rgba(244,67,54,0.2);color:#f44336}
 .btn.stop:hover{background:rgba(244,67,54,0.3)}
 .btn.db{width:auto;padding:0 12px;font-size:14px;border-radius:6px;background:rgba(33,150,243,0.15);color:#2196f3}
 .btn.db:hover{background:rgba(33,150,243,0.25)}
-.status{font-size:14px;color:#666;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px;margin-left:6px;flex:1}
-.status.on{color:#4caf50}
-.status.err{color:#f44336}
-.db-output{font-size:14px;color:#aaa;white-space:pre-wrap;max-height:150px;overflow-y:auto;margin-top:6px;font-family:monospace}
+.status{font-size:14px;color:#cccccc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:260px;margin-left:6px;flex:1}
+.status.on{color:#66ff66}
+.status.err{color:#ff6666}
+.db-output{font-size:14px;color:#dddddd;white-space:pre-wrap;max-height:150px;overflow-y:auto;margin-top:6px;font-family:monospace}
 .db-row{display:flex;gap:6px;margin-top:6px}
-.db-row select,.db-row input{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:#e0e0e0;border-radius:6px;padding:4px 10px;font-size:16px}
+.db-row select,.db-row input{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);color:#ffffff;border-radius:6px;padding:4px 10px;font-size:16px}
 .db-row select option{background:#2a2a2a}
 </style></head><body>
 <div class="tabs">
@@ -166,8 +166,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,sans-serif;background:transpar
     <span class="status" id="p-status">...</span>
   </div>
   <div class="bar" style="margin-top:4px">
-    <span style="font-size:16px;color:#888;width:60px">Mood:</span>
-    <select id="mood" style="flex:1;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);color:#e0e0e0;border-radius:6px;padding:4px 10px;font-size:16px"><option value="">Resume</option><option value="ambient">Ambient</option><option value="rock">Rock</option><option value="jazz">Jazz</option><option value="country">Country</option><option value="electronic">Electronic</option><option value="classical">Classical</option><option value="pop">Pop</option><option value="dance">Dance</option><option value="blues">Blues</option><option value="metal">Metal</option><option value="reggae">Reggae</option><option value="soul">Soul</option><option value="funk">Funk</option><option value="techno">Techno</option><option value="indie">Indie</option><option value="folk">Folk</option><option value="lounge">Lounge</option><option value="80s">80s</option><option value="90s">90s</option></select>
+    <span style="font-size:16px;color:#cccccc;width:60px">Mood:</span>
+    <select id="mood" style="flex:1;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.25);color:#ffffff;border-radius:6px;padding:4px 10px;font-size:16px"><option value="">Resume</option><option value="ambient">Ambient</option><option value="rock">Rock</option><option value="jazz">Jazz</option><option value="country">Country</option><option value="electronic">Electronic</option><option value="classical">Classical</option><option value="pop">Pop</option><option value="dance">Dance</option><option value="blues">Blues</option><option value="metal">Metal</option><option value="reggae">Reggae</option><option value="soul">Soul</option><option value="funk">Funk</option><option value="techno">Techno</option><option value="indie">Indie</option><option value="folk">Folk</option><option value="lounge">Lounge</option><option value="80s">80s</option><option value="90s">90s</option></select>
     <button class="btn play" onclick="playMood()" title="Play mood" style="width:40px;height:40px;font-size:18px">▶</button>
   </div>
 </div>
