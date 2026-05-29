@@ -50,6 +50,15 @@ Embed the panel in a webchat message:
 
 When playback is stopped via `stop`, pressing `play` without specifying a mood/genre automatically resumes the last played stream. Specifying a mood always starts a new random stream.
 
+## Installation
+
+**⚠️ Important: use the `clawhub:` prefix, otherwise the plugin will not be found.**
+
+```bash
+openclaw plugins install "clawhub:internet-radio-music-webui"
+openclaw gateway restart
+```
+
 ## License
 
 MIT
