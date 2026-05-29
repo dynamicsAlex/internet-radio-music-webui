@@ -104,7 +104,11 @@ async function handleDbApi(req, res) {
       break;
     }
     case "list":
-      result = await runScript(DB_CLI, body.genre ? ["list", body.genre] : ["list"]);
+      if (body.genre) {
+        result = await runScript(DB_CLI, ["list", body.genre]);
+      } else {
+        result = await runScript(DB_STATS, [], 60000);
+      }
       break;
     case "check":
       result = await runScript(DB_CHECK, [], 120000);
