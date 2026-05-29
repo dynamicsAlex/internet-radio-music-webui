@@ -1,14 +1,16 @@
 import { definePluginEntry } from "openclaw/plugin-sdk/plugin-entry";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
+import { homedir } from "node:os";
+import { join } from "node:path";
 
 const execFileAsync = promisify(execFile);
-
-const PLAY_SCRIPT = "C:\\Users\\alter\\.openclaw\\skills\\internet-radio-music-player\\scripts\\play_music.py";
-const DB_CLI = "C:\\Users\\alter\\.openclaw\\skills\\internet-radio-music-db\\scripts\\cli.py";
-const DB_STATS = "C:\\Users\\alter\\.openclaw\\skills\\internet-radio-music-db\\scripts\\show_stats.py";
-const DB_CHECK = "C:\\Users\\alter\\.openclaw\\skills\\internet-radio-music-db\\scripts\\check_availability.py";
-const DB_BUILD = "C:\\Users\\alter\\.openclaw\\skills\\internet-radio-music-db\\scripts\\build_db.py";
+const SKILLS_BASE = join(homedir(), ".openclaw", "skills");
+const PLAY_SCRIPT = join(SKILLS_BASE, "internet-radio-music-player", "scripts", "play_music.py");
+const DB_CLI      = join(SKILLS_BASE, "internet-radio-music-db", "scripts", "cli.py");
+const DB_STATS    = join(SKILLS_BASE, "internet-radio-music-db", "scripts", "show_stats.py");
+const DB_CHECK    = join(SKILLS_BASE, "internet-radio-music-db", "scripts", "check_availability.py");
+const DB_BUILD    = join(SKILLS_BASE, "internet-radio-music-db", "scripts", "build_db.py");
 
 async function runScript(script, args = [], timeout = 30000) {
   try {
