@@ -1,5 +1,5 @@
 {
-  "name": "@dynamicsAlex/internet-radio-music-webui",
+  "name": "internet-radio-music-webui",
   "version": "1.0.0",
   "type": "module",
   "description": "Web UI for internet radio music player and stream database management. Requires internet-radio-music-player and internet-radio-music-db skills.",
