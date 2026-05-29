@@ -1,8 +1,26 @@
 {
   "name": "internet-radio-music-webui",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "type": "module",
   "description": "Web UI for internet radio music player and stream database management. Requires internet-radio-music-player and internet-radio-music-db skills.",
+  "license": "MIT",
+  "keywords": [
+    "openclaw",
+    "openclaw-plugin",
+    "internet-radio",
+    "music-player",
+    "webui",
+    "streaming"
+  ],
+  "author": "dynamicsAlex",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dynamicsAlex/internet-radio-music-webui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/dynamicsAlex/internet-radio-music-webui/issues"
+  },
+  "homepage": "https://github.com/dynamicsAlex/internet-radio-music-webui#readme",
   "openclaw": {
     "extensions": ["./index.js"],
     "compat": {
