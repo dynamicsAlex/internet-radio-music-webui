@@ -180,6 +180,9 @@ function getPanelHtml() {
   --_r:        var(--control-ui-text-scale, 1);
 }
 *{margin:0;padding:0;box-sizing:border-box}
+html,body{
+  height:100%;
+}
 body{
   font-family:var(--_font);
   background:var(--_bg);
@@ -188,9 +191,11 @@ body{
   font-size:max(14px, calc(1rem * var(--_r)));
   line-height:1.5;
   -webkit-font-smoothing:antialiased;
+  display:flex;
+  flex-direction:column;
 }
 /* Tabs */
-.tabs{display:flex;gap:2px;padding:4px 8px 0}
+.tabs{display:flex;gap:2px;padding:4px 8px 0;flex-shrink:0}
 .tab{
   padding:6px 14px;
   font-size:max(13px, calc(0.875rem * var(--_r)));
@@ -204,7 +209,7 @@ body{
 .tab.active{background:var(--_bg2);color:var(--_text);font-weight:600}
 /* Panes */
 .pane{padding:12px 14px;display:none}
-.pane.active{display:block}
+.pane.active{display:flex;flex-direction:column;flex:1;min-height:0}
 /* Rows */
 .bar{display:flex;align-items:center;gap:6px;min-height:42px}
 /* Buttons */
@@ -260,9 +265,9 @@ body{
   font-size:max(13px, calc(0.875rem * var(--_r)));
   color:var(--_text2);
   white-space:pre-wrap;
-  min-height:160px;
-  max-height:300px;
   overflow-y:auto;
+  flex:1;
+  min-height:0;
   margin-top:6px;
   font-family:"SF Mono",SFMono-Regular,Consolas,"Liberation Mono",monospace;
   line-height:1.5;

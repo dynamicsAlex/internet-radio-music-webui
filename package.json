@@ -1,6 +1,6 @@
 {
   "name": "internet-radio-music-webui",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "type": "module",
   "description": "Web UI for internet radio music player and stream database management. Requires internet-radio-music-player and internet-radio-music-db skills.",
   "license": "MIT",
