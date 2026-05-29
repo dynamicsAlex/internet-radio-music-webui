@@ -1,0 +1,27 @@
+{
+  "id": "internet-radio-music-webui",
+  "name": "Internet Radio Music WebUI",
+  "version": "1.0.0",
+  "description": "Web UI for controlling internet radio music player and stream database management. Provides an embeddable web panel with playback controls (play/stop/next/prev/resume), mood-based genre selection, and stream database management (stats, list, check availability, rebuild). Requires internet-radio-music-player and internet-radio-music-db skills — will NOT work without them.",
+  "activation": {
+    "onStartup": true
+  },
+  "enabledByDefault": true,
+  "contracts": {
+    "tools": ["music_player"]
+  },
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "playerScript": {
+        "type": "string",
+        "description": "Path to play_music.py (auto-detected)"
+      },
+      "panelUrl": {
+        "type": "string",
+        "description": "URL of the player panel HTML (auto-set by plugin)"
+      }
+    }
+  }
+}
