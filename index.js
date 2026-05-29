@@ -203,7 +203,7 @@ body{
 .tab:hover{color:var(--_text2)}
 .tab.active{background:var(--_bg2);color:var(--_text);font-weight:600}
 /* Panes */
-.pane{padding:8px;display:none}
+.pane{padding:12px 14px;display:none}
 .pane.active{display:block}
 /* Rows */
 .bar{display:flex;align-items:center;gap:6px;min-height:42px}
@@ -257,17 +257,21 @@ body{
 .status.err{color:var(--_red);font-weight:500}
 /* DB output area */
 .db-output{
-  font-size:max(12px, calc(0.8125rem * var(--_r)));
+  font-size:max(13px, calc(0.875rem * var(--_r)));
   color:var(--_text2);
   white-space:pre-wrap;
-  max-height:130px;overflow-y:auto;
-  margin-top:4px;
+  min-height:160px;
+  max-height:300px;
+  overflow-y:auto;
+  margin-top:6px;
   font-family:"SF Mono",SFMono-Regular,Consolas,"Liberation Mono",monospace;
   line-height:1.5;
-  border-radius:6px;
-  padding:8px;
+  border-radius:8px;
+  padding:12px;
   background:var(--_bg3);
   border:1px solid var(--_border);
+  width:100%;
+  box-sizing:border-box;
 }
 /* Form controls */
 .db-row{display:flex;gap:6px;margin-top:6px}
